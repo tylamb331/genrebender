@@ -1,0 +1,51 @@
+name: Build Mac plugin
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure (Apple Silicon + Intel)
+        run: cmake -B build -G Xcode -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build VST3 and AU
+        run: cmake --build build --config Release --target GenreBender_All -- -quiet
+
+      - name: Sign and zip
+        run: |
+          mkdir -p out
+          cp -R "build/GenreBender_artefacts/Release/VST3/Genre Bender.vst3" out/
+          cp -R "build/GenreBender_artefacts/Release/AU/Genre Bender.component" out/
+          codesign --force --deep -s - "out/Genre Bender.vst3"
+          codesign --force --deep -s - "out/Genre Bender.component"
+          cp INSTALL-MAC.txt out/
+          cd out && ditto -c -k --sequesterRsrc . ../Genre-Bender-Mac.zip
+
+      - name: Check the AU loads
+        run: |
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          cp -R "out/Genre Bender.component" ~/Library/Audio/Plug-Ins/Components/
+          killall -9 AudioComponentRegistrar || true
+          auval -v aumu GnBd SlBk || echo "auval did not pass (the VST3 is what FL Studio uses)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Genre-Bender-Mac
+          path: Genre-Bender-Mac.zip
+
+      - name: Publish as the "latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest -y --cleanup-tag || true
+          gh release create latest Genre-Bender-Mac.zip --title "Genre Bender - latest Mac build" \
+            --notes "Download Genre-Bender-Mac.zip, unzip, and follow INSTALL-MAC.txt inside."

@@ -1,0 +1,28 @@
+GENRE BENDER - by Sir Lord Black
+Install on your Mac (FL Studio)
+
+1. Unzip Genre-Bender-Mac.zip. You get "Genre Bender.vst3" and "Genre Bender.component".
+
+2. In Finder press Shift+Cmd+G and go to:   ~/Library/Audio/Plug-Ins/VST3
+   Drag "Genre Bender.vst3" in there.
+   (Optional, for Logic/GarageBand: put "Genre Bender.component" in ~/Library/Audio/Plug-Ins/Components)
+
+3. The plugin isn't from the App Store, so macOS may block it. Open Terminal and paste this line, then press Return:
+
+   xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"Genre Bender.vst3"
+
+4. In FL Studio: Options > Manage plugins > Find installed plugins (Start scan).
+   Then add it from the Channel rack: + > Genre Bender (it's an instrument/generator).
+
+HOW TO USE IT IN FL
+- Press GENERATE, then PLAY (inside the plugin) or press play in FL. It plays in time with FL.
+- The easiest way to get the MIDI onto your own sounds: grab "DRAG PART" (for the tab you're on)
+  or "DRAG FULL BAND" and drop it onto a channel, a piano roll, or the playlist.
+- EXPORT MIDI saves the file to Music/Genre Bender and shows it in Finder.
+- Each part plays on its own MIDI channel: Keys 1, Bass 2, Lead 3, Guitar 4, Pad 5, Arp 6.
+- Turn PREVIEW SOUND off once your own instruments are playing the parts.
+
+PIANO ROLL (pick a part tab first)
+- Click an empty spot to add a note, drag a note to move it, drag its right edge to change its length.
+- Right-click or double-click a note to delete it.
+- Mouse wheel scrolls up and down, Shift+wheel scrolls sideways, Cmd+wheel zooms. FIT shows the whole song.
